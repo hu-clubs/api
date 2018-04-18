@@ -1,22 +1,55 @@
 const mongoose = require('mongoose');
+const bcryptjs = require('bcryptjs');
+const promisify = require('util').promisify;
+
+const asyncHash = promisify(bcryptjs.hash);
 
 let userSchema = mongoose.Schema({
   firstName: {
-    type: String
+    type: String,
+    required: true
   },
   lastName: {
-    type: String
+    type: String,
+    required: true
   },
   email: {
-    type: String
+    type: String,
+    unique: true,
+    required: true
   },
   hNumber: {
-    type: String
+    type: String,
+    unique: true,
+    required: true
   },
   password: {
-    type: String
+    type: String,
+    required: true
+  }
+}, {
+  toJSON: {
+    getters: false,
+    virtuals: false,
+    transform: (doc, obj, options) => {
+      delete obj.password;
+      return obj;
+    }
   }
 });
+
+userSchema.pre('save', function (next) {
+  if (this.isModified('password')) {
+    asyncHash(this.password, 10).then((hash) => {
+      this.password = hash;
+      next();
+    });
+  }
+});
+
+userSchema.methods.authenticate = async function (candidatePassword) {
+  return bcryptjs.compare(candidatePassword, this.password);
+};
 
 let UserModel = mongoose.model('User', userSchema);
 

@@ -1,9 +1,10 @@
 const express = require('express');
 const controller = require('./controller');
+const middleware = require('./middleware');
 const router = express.Router();
 
-// Get user from parameter
-// router.param('user');
+// Middleware
+router.param('userId', middleware.getUserFromParameter);
 
 // Add user
 router.post('/', controller.addUser);
@@ -12,12 +13,12 @@ router.post('/', controller.addUser);
 router.get('/', controller.getUsers);
 
 // Get user details
-// router.get('/:user');
+router.get('/:userId', controller.getUser);
 
 // Update user
-// router.patch('/:user');
+router.patch('/:userId', controller.updateUser);
 
 // Delete user
-// router.delete('/:user');
+router.delete('/:userId', controller.deleteUser);
 
 module.exports = router;
