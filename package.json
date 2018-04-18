@@ -1,0 +1,19 @@
+{
+  "name": "hu-clubs-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hu-clubs/api.git"
+  },
+  "author": "Jerred Shepherd <shepherdjerred@gmail.com> (https://github.com/shepherdjerred)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/hu-clubs/api/issues"
+  },
+  "homepage": "https://github.com/hu-clubs/api#readme"
+}
