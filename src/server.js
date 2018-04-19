@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const loglevel = require('loglevel');
 const authenticationRouter = require('./authentication/routes');
 const userRouter = require('./user/routes');
+const clubRouter = require('./club/routes');
 const middleware = require('./middleware');
 
 require('./mongoose');
@@ -20,6 +21,7 @@ loglevel.setLevel('trace');
 (function registerRoutes () {
   app.use('/api/authentication', authenticationRouter);
   app.use('/api/user', userRouter);
+  app.use('/api/club', clubRouter);
 })();
 
 (function registerErrorHandlers () {
