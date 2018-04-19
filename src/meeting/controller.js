@@ -24,7 +24,7 @@ async function addMeeting (req, res, next) {
 
 async function getMeetings (req, res, next) {
   try {
-    let meetings = MeetingModel.find();
+    let meetings = await MeetingModel.find();
     res.json(meetings);
   } catch (err) {
     next({
@@ -60,7 +60,7 @@ async function updateMeeting (req, res, next) {
 
 async function deleteMeeting (req, res, next) {
   try {
-    let club = res.locals.club.remove();
+    let club = await res.locals.club.remove();
     res.json(club);
   } catch (err) {
     next({

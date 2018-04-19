@@ -28,7 +28,7 @@ let userSchema = mongoose.Schema({
     required: true
   },
   roles: [{
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Role'
   }]
 }, {

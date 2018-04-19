@@ -24,7 +24,7 @@ let meetingSchema = mongoose.Schema({
     type: point.pointSchema
   },
   attendees: [{
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'
   }]

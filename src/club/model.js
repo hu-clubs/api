@@ -12,7 +12,7 @@ let clubSchema = mongoose.Schema({
     required: true
   },
   members: [{
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'
   }]

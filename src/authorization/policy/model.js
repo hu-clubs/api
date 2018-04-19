@@ -7,7 +7,7 @@ let policySchema = mongoose.Schema({
     unique: true
   },
   statements: [{
-    type: mongoose.Schema.types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Statement'
   }]
 });

@@ -20,7 +20,7 @@ async function addClub (req, res, next) {
 
 async function getClubs (req, res, next) {
   try {
-    let clubs = ClubModel.find();
+    let clubs = await ClubModel.find();
     res.json(clubs);
   } catch (err) {
     next({
@@ -36,9 +36,9 @@ async function getClub (req, res, next) {
 
 async function updateClub (req, res, next) {
   let club = res.locals.club;
-  club.name = res.body.name || club.name;
-  club.shortName = res.body.shortName || club.shortName;
-  club.members = res.body.members || club.members;
+  club.name = req.body.name || club.name;
+  club.shortName = req.body.shortName || club.shortName;
+  club.members = req.body.members || club.members;
   try {
     club = await club.save();
     res.json(club);
@@ -52,7 +52,7 @@ async function updateClub (req, res, next) {
 
 async function deleteClub (req, res, next) {
   try {
-    let club = res.locals.club.remove();
+    let club = await res.locals.club.remove();
     res.json(club);
   } catch (err) {
     next({

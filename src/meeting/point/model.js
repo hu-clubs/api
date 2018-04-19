@@ -5,7 +5,7 @@ let pointSchema = mongoose.Schema({
   coordinates: [Number]
 });
 
-let pointModel = mongoose.model('Point, pointSchema');
+let pointModel = mongoose.model('Point', pointSchema);
 
 module.exports = {
   pointSchema,
