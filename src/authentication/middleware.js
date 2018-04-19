@@ -1,4 +1,27 @@
+const jwt = require('jsonwebtoken');
 const UserModel = require('../user/model');
+
+async function authenticate (req, res, next) {
+  let token = req.header('Authorization');
+  // TODO use real secret
+  try {
+    token = await jwt.verify(token, 'secret');
+    try {
+      res.locals.auth.user = await UserModel.findOne({'_id': token.user});
+      next();
+    } catch (err) {
+      next({
+        status: 400,
+        error: err
+      });
+    }
+  } catch (err) {
+    next({
+      status: 400,
+      error: err
+    });
+  }
+}
 
 async function login (req, res, next) {
   let email = req.body.email;
@@ -11,16 +34,22 @@ async function login (req, res, next) {
         res.locals.user = user;
         next();
       } else {
-        res.status(403);
-        res.json({'message': 'Invalid credentials'});
+        next({
+          status: 401,
+          error: 'Invalid password'
+        });
       }
     } else {
-      res.status(404);
-      res.json({'message': 'User not found'});
+      next({
+        status: 404,
+        error: 'User not found'
+      });
     }
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      status: 500,
+      error: err
+    });
   }
 }
 
