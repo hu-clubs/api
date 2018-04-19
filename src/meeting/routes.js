@@ -7,9 +7,13 @@ const router = express.Router();
 router.param('meetingId', middleware.getMeetingFromParameter);
 
 router.post('/', controller.addMeeting);
+
 router.get('/', controller.getMeetings);
+
 router.get('/:meetingId', controller.getMeeting);
+
 router.patch('/:meetingId', controller.updateMeeting);
+
 router.delete('/:meetingId', controller.deleteMeeting);
 
 router.param('clubId', clubMiddleware.getClubFromParameter);
@@ -17,7 +21,7 @@ router.param('clubId', clubMiddleware.getClubFromParameter);
 // Get meetings for one club
 router.get('/:clubId');
 
-// Add a member to a meeting
-router.post('/:meetingId/:userId');
+// Get latest meeting for club
+router.get('/:clubId/latest');
 
 module.exports = router;
