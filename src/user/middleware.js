@@ -7,12 +7,16 @@ async function getUserFromParameter (req, res, next, userId) {
       res.locals.user = user;
       next();
     } else {
-      res.status(400);
-      res.json({'message': 'User not found'});
+      next({
+        statusCode: 404,
+        error: 'User not found'
+      });
     }
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      statusCode: 500,
+      error: err
+    });
   }
 }
 

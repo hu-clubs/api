@@ -1,9 +1,10 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const morgan = require('morgan');
+const loglevel = require('loglevel');
 const authenticationRouter = require('./authentication/routes');
 const userRouter = require('./user/routes');
-const loglevel = require('loglevel');
+const middleware = require('./middleware');
 
 require('./mongoose');
 
@@ -11,12 +12,19 @@ let app = express();
 
 loglevel.setLevel('trace');
 
-app.use(morgan('dev'));
+(function registerMiddleware () {
+  app.use(morgan('dev'));
+  app.use(bodyparser.json());
+})();
 
-app.use(bodyparser.json());
+(function registerRoutes () {
+  app.use('/api/authentication', authenticationRouter);
+  app.use('/api/user', userRouter);
+})();
 
-app.use('/api/authentication', authenticationRouter);
-app.use('/api/user', userRouter);
+(function registerErrorHandlers () {
+  app.use(middleware.handleError);
+})();
 
 app.listen(8080, () => {
   loglevel.info('Express listening on port 8080');

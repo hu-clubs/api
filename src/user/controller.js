@@ -13,8 +13,10 @@ async function addUser (req, res, next) {
     user = await user.save();
     res.send(user);
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      statusCode: 500,
+      error: err
+    });
   }
 }
 
@@ -23,8 +25,10 @@ async function getUsers (req, res, next) {
     let users = await UserModel.find();
     res.json(users);
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      statusCode: 500,
+      error: err
+    });
   }
 }
 
@@ -43,8 +47,10 @@ async function updateUser (req, res, next) {
     user = await user.save();
     res.json(user);
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      statusCode: 500,
+      error: err
+    });
   }
 }
 
@@ -53,8 +59,10 @@ async function deleteUser (req, res, next) {
     let user = await res.locals.user.remove();
     res.json(user);
   } catch (err) {
-    res.status(500);
-    res.json({'message': err});
+    next({
+      statusCode: 500,
+      error: err
+    });
   }
 }
 
