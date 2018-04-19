@@ -1,6 +1,6 @@
 const loglevel = require('loglevel');
 
-// TODO might be good two have a separate field for user-friendly error messages
+// TODO have a flag for production that will show user-friendly errors instead of stack trace
 function handleError (err, req, res, next) {
   loglevel.error(err);
   res.status(err.status || 500);
