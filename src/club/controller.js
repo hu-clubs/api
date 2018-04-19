@@ -35,7 +35,13 @@ async function getClub (req, res, next) {
 }
 
 async function updateClub (req, res, next) {
+  let club = res.locals.club;
+  club.name = res.body.name || club.name;
+  club.shortName = res.body.shortName || club.shortName;
+  club.members = res.body.members || club.members;
   try {
+    club = await club.save();
+    res.json(club);
   } catch (err) {
     next({
       status: 500,
@@ -46,6 +52,8 @@ async function updateClub (req, res, next) {
 
 async function deleteClub (req, res, next) {
   try {
+    let club = res.locals.club.remove();
+    res.json(club);
   } catch (err) {
     next({
       status: 500,
