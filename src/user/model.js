@@ -26,7 +26,11 @@ let userSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  roles: [{
+    type: mongoose.Schema.types.ObjectId,
+    ref: 'Role'
+  }]
 }, {
   toJSON: {
     getters: false,
