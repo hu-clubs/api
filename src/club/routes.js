@@ -1,18 +1,19 @@
 const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
+const authenticationMiddleware = require('../authentication/middleware');
 const router = express.Router();
 
 router.param('clubId', middleware.getClubFromParameter);
 
-router.post('/', controller.addClub);
+router.post('/', authenticationMiddleware.authenticate, controller.addClub);
 
-router.get('/', controller.getClubs);
+router.get('/', authenticationMiddleware.authenticate, controller.getClubs);
 
-router.get('/:clubId', controller.getClub);
+router.get('/:clubId', authenticationMiddleware.authenticate, controller.getClub);
 
-router.patch('/:clubId', controller.updateClub);
+router.patch('/:clubId', authenticationMiddleware.authenticate, controller.updateClub);
 
-router.delete('/:clubId', controller.deleteClub);
+router.delete('/:clubId', authenticationMiddleware.authenticate, controller.deleteClub);
 
 module.exports = router;

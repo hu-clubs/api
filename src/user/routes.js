@@ -1,6 +1,7 @@
 const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
+const authenticationMiddleware = require('../authentication/middleware');
 const router = express.Router();
 
 // Middleware
@@ -10,15 +11,15 @@ router.param('userId', middleware.getUserFromParameter);
 router.post('/', controller.addUser);
 
 // List users
-router.get('/', controller.getUsers);
+router.get('/', authenticationMiddleware.authenticate, controller.getUsers);
 
 // Get user details
-router.get('/:userId', controller.getUser);
+router.get('/:userId', authenticationMiddleware.authenticate, controller.getUser);
 
 // Update user
-router.patch('/:userId', controller.updateUser);
+router.patch('/:userId', authenticationMiddleware.authenticate, controller.updateUser);
 
 // Delete user
-router.delete('/:userId', controller.deleteUser);
+router.delete('/:userId', authenticationMiddleware.authenticate, controller.deleteUser);
 
 module.exports = router;
