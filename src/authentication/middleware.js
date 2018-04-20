@@ -4,10 +4,15 @@ const UserModel = require('../user/model');
 async function authenticate (req, res, next) {
   let token = req.header('Authorization');
   // TODO use real secret
+  // TODO use real issuer
   try {
-    token = await jwt.verify(token, 'secret');
+    token = await jwt.verify(token, 'secret', {
+      issuer: 'hu-clubs'
+    });
     try {
-      res.locals.auth.user = await UserModel.findOne({'_id': token.user});
+      res.locals.auth = {
+        user: await UserModel.findOne({'_id': token.user})
+      };
       next();
     } catch (err) {
       next({
@@ -54,5 +59,6 @@ async function login (req, res, next) {
 }
 
 module.exports = {
+  authenticate,
   login
 };
