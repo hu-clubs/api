@@ -8,7 +8,8 @@ async function addMeeting (req, res, next) {
     start: req.body.start,
     end: req.body.end,
     location: req.body.location,
-    attendees: req.body.attendees
+    attendees: req.body.attendees,
+    club: req.body.club
   });
 
   try {
@@ -47,6 +48,7 @@ async function updateMeeting (req, res, next) {
   meeting.end = req.body.end || meeting.end;
   meeting.location = req.body.location || meeting.location;
   meeting.attendees = req.body.attendees || meeting.attendees;
+  meeting.club = req.body.club || meeting.club;
   try {
     meeting = await meeting.save();
     res.json(meeting);
@@ -60,8 +62,35 @@ async function updateMeeting (req, res, next) {
 
 async function deleteMeeting (req, res, next) {
   try {
-    let club = await res.locals.club.remove();
+    let club = await res.locals.meeting.remove();
     res.json(club);
+  } catch (err) {
+    next({
+      status: 500,
+      error: err
+    });
+  }
+}
+
+async function getMeetingsForClub (req, res, next) {
+  let club = res.locals.club;
+
+  try {
+    let meetings = await MeetingModel.find({'club': club._id});
+    res.json(meetings);
+  } catch (err) {
+    next({
+      status: 500,
+      error: err
+    });
+  }
+}
+
+async function getLatestMeetingForClub (req, res, next) {
+  let club = res.locals.club;
+  try {
+    let meeting = await MeetingModel.findOne({'club': club._id}).sort('start');
+    res.json(meeting);
   } catch (err) {
     next({
       status: 500,
@@ -75,5 +104,7 @@ module.exports = {
   getMeetings,
   getMeeting,
   updateMeeting,
-  deleteMeeting
+  deleteMeeting,
+  getMeetingsForClub,
+  getLatestMeetingForClub
 };
