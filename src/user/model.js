@@ -16,7 +16,8 @@ let userSchema = mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    required: true
+    required: true,
+    index: true
   },
   hNumber: {
     type: String,
@@ -29,8 +30,13 @@ let userSchema = mongoose.Schema({
   },
   roles: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Role'
-  }]
+    ref: 'Role',
+    default: []
+  }],
+  confirmed: {
+    type: Boolean,
+    default: false
+  }
 }, {
   toJSON: {
     getters: false,

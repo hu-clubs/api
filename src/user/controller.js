@@ -6,7 +6,9 @@ async function addUser (req, res, next) {
     lastName: req.body.lastName,
     email: req.body.email,
     hNumber: req.body.hNumber,
-    password: req.body.password
+    password: req.body.password,
+    roles: req.body.roles,
+    confirmed: req.body.confirmed
   });
 
   try {
@@ -43,6 +45,8 @@ async function updateUser (req, res, next) {
   user.email = req.body.email || user.email;
   user.hNumber = req.body.hNumber || user.hNumber;
   user.password = req.body.password || user.password;
+  user.roles = req.body.roles || user.roles;
+  user.confirmed = req.body.confirmed || user.confirmed;
   try {
     user = await user.save();
     res.json(user);
