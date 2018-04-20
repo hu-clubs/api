@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const point = require('./point/model');
+const moment = require('moment');
 
 let meetingSchema = mongoose.Schema({
   name: {
@@ -7,26 +7,42 @@ let meetingSchema = mongoose.Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    default: ''
   },
   notes: {
-    type: String
+    type: String,
+    default: ''
   },
   start: {
     type: Date,
-    required: true
+    default: moment
   },
   end: {
     type: Date,
-    required: true
+    default: moment().add(1, 'hours').calendar
   },
   location: {
-    type: point.pointSchema
+    type: {
+      type: String,
+      enum: 'POINT',
+      default: 'POINT'
+    },
+    coordinates: {
+      type: [Number],
+      required: true
+    }
+  },
+  club: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Club',
+    required: true,
+    index: true
   },
   attendees: [{
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User'
+    ref: 'User',
+    default: []
   }]
 });
 
