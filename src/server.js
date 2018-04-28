@@ -2,6 +2,8 @@ const express = require('express');
 const bodyparser = require('body-parser');
 const morgan = require('morgan');
 const loglevel = require('loglevel');
+const cors = require('cors');
+
 const authenticationRouter = require('./authentication/routes');
 const userRouter = require('./user/routes');
 const clubRouter = require('./club/routes');
@@ -15,6 +17,8 @@ let app = express();
 loglevel.setLevel('trace');
 
 (function registerMiddleware () {
+  // TODO only allow CORS from certain origins
+  app.use(cors());
   app.use(morgan('dev'));
   app.use(bodyparser.json());
 })();
