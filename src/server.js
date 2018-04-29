@@ -17,8 +17,16 @@ let app = express();
 loglevel.setLevel('trace');
 
 (function registerMiddleware () {
-  // TODO only allow CORS from certain origins
-  app.use(cors());
+  app.options('*', cors({
+    origin: 'http://localhost:3000',
+    allowedHeaders: 'Authorization',
+    credentials: true
+  }));
+  app.use(cors({
+    origin: 'http://localhost:3000',
+    allowedHeaders: 'Authorization',
+    credentials: true
+  }));
   app.use(morgan('dev'));
   app.use(bodyparser.json());
 })();
