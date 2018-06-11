@@ -19,12 +19,12 @@ loglevel.setLevel('trace');
 (function registerMiddleware () {
   app.options('*', cors({
     origin: 'http://localhost:3000',
-    allowedHeaders: 'Authorization',
+    allowedHeaders: 'Authorization, Content-Type',
     credentials: true
   }));
   app.use(cors({
     origin: 'http://localhost:3000',
-    allowedHeaders: 'Authorization',
+    allowedHeaders: 'Authorization, Content-Type',
     credentials: true
   }));
   app.use(morgan('dev'));
