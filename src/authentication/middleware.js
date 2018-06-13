@@ -41,13 +41,17 @@ async function login (req, res, next) {
       } else {
         next({
           status: 401,
-          error: 'Invalid password'
+          error: {
+            name: 'Invalid password'
+          }
         });
       }
     } else {
       next({
         status: 404,
-        error: 'User not found'
+        error: {
+          name: 'User not found'
+        }
       });
     }
   } catch (err) {
