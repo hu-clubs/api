@@ -8,7 +8,7 @@ let roleSchema = mongoose.Schema({
   },
   policies: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Policy',
+    ref: 'Policy'
   }]
 });
 

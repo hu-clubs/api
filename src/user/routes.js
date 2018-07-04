@@ -2,10 +2,14 @@ const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
 const authenticationMiddleware = require('../authentication/middleware');
+const authenticationController = require('../authentication/controller');
 const router = express.Router();
 
 // Middleware
 router.param('userId', middleware.getUserFromParameter);
+
+// Register user
+router.post('/register', middleware.registerUser, authenticationController.sendJwt);
 
 // Add user
 router.post('/', controller.addUser);
