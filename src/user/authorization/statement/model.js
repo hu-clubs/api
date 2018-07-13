@@ -7,7 +7,7 @@ let statementSchema = mongoose.Schema({
     unique: true
   },
   resource: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true
   },
   effect: {

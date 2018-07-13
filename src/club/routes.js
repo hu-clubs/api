@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
-const authenticationMiddleware = require('../authentication/middleware');
+const authenticationMiddleware = require('../user/authentication/middleware');
 const router = express.Router();
 
 router.param('clubId', middleware.getClubFromParameter);

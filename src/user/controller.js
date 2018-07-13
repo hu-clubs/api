@@ -1,19 +1,40 @@
 const UserModel = require('./model');
 
 async function addUser (req, res, next) {
-  let user = new UserModel({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    hNumber: req.body.hNumber,
-    password: req.body.password,
-    roles: req.body.roles,
-    confirmed: req.body.confirmed
-  });
+  let isRegistering = req.body.register;
+  let user;
+  if (isRegistering) {
+    // TODO load default role?
+    // TODO send confirmation email
+    user = new UserModel({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      hNumber: req.body.hNumber,
+      password: req.body.password,
+      roles: [],
+      confirmed: false
+    });
+  } else {
+    user = new UserModel({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      hNumber: req.body.hNumber,
+      password: req.body.password,
+      roles: req.body.roles,
+      confirmed: req.body.confirmed
+    });
+  }
 
   try {
     user = await user.save();
-    res.send(user);
+    if (isRegistering) {
+      res.locals.user = user;
+      next();
+    } else {
+      res.send(user);
+    }
   } catch (err) {
     next({
       statusCode: 500,
@@ -70,10 +91,48 @@ async function deleteUser (req, res, next) {
   }
 }
 
+async function addRoleToUser (req, res, next) {
+  let user = res.locals.user;
+  let role = res.locals.role;
+  user.roles.push(role);
+  try {
+    user = await user.save();
+    res.json(user);
+  } catch (err) {
+    next({
+      statusCode: 500,
+      error: err
+    });
+  }
+}
+
+async function getRolesForUser (req, res, next) {
+  let user = res.locals.user;
+  try {
+    user = await UserModel.findOne({'_id': user._id}).populate({
+      path: 'roles',
+      populate: {
+        path: 'policies',
+        populate: {
+          path: 'statements'
+        }
+      }
+    });
+    res.json(user.roles);
+  } catch (err) {
+    next({
+      statusCode: 500,
+      error: err
+    });
+  }
+}
+
 module.exports = {
   addUser,
   getUsers,
   getUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  addRoleToUser,
+  getRolesForUser
 };

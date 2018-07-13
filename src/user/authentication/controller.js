@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
+const config = require('../../config');
 
 async function sendJwt (req, res, next) {
   let user = res.locals.user;
-  // TODO use a real secret
-  // TODO use a real issuer
-  let token = jwt.sign({'user': user._id}, 'secret', {
-    issuer: 'hu-clubs'
+  let token = jwt.sign({'user': user._id}, config.jwtSecret, {
+    issuer: config.jwtIssuer
   });
   res.json({'token': token});
 }

@@ -4,11 +4,11 @@ const morgan = require('morgan');
 const loglevel = require('loglevel');
 const cors = require('cors');
 
-const authenticationRouter = require('./authentication/routes');
 const userRouter = require('./user/routes');
 const clubRouter = require('./club/routes');
 const meetingRouter = require('./meeting/routes');
 const middleware = require('./middleware');
+const config = require('./config');
 
 require('./mongoose');
 
@@ -18,12 +18,12 @@ loglevel.setLevel('trace');
 
 (function registerMiddleware () {
   app.options('*', cors({
-    origin: 'http://localhost:3000',
+    origin: config.frontEndUrl,
     allowedHeaders: 'Authorization, Content-Type',
     credentials: true
   }));
   app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: config.frontEndUrl,
     allowedHeaders: 'Authorization, Content-Type',
     credentials: true
   }));
@@ -32,16 +32,17 @@ loglevel.setLevel('trace');
 })();
 
 (function registerRoutes () {
-  app.use('/api/authentication', authenticationRouter);
-  app.use('/api/user', userRouter);
-  app.use('/api/club', clubRouter);
-  app.use('/api/meeting', meetingRouter);
+  app.use('/api/users', userRouter);
+  app.use('/api/clubs', clubRouter);
+  app.use('/api/meetings', meetingRouter);
 })();
 
 (function registerErrorHandlers () {
   app.use(middleware.handleError);
 })();
 
-app.listen(8080, () => {
-  loglevel.info('Express listening on port 8080');
-});
+(function listen (port) {
+  app.listen(port, () => {
+    loglevel.info('Express listening on port ' + port);
+  });
+})(config.port);

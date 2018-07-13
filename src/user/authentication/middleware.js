@@ -1,18 +1,24 @@
 const jwt = require('jsonwebtoken');
-const UserModel = require('../user/model');
+const UserModel = require('../model');
+const config = require('../../config');
 
 async function authenticate (req, res, next) {
   let token = req.header('Authorization');
-  // TODO use real secret
-  // TODO use real issuer
   try {
-    token = await jwt.verify(token, 'secret', {
-      issuer: 'hu-clubs'
+    token = await jwt.verify(token, config.jwtSecret, {
+      issuer: config.jwtIssuer
     });
     try {
+      let user = await UserModel.findOne({'_id': token.user});
       res.locals.auth = {
-        user: await UserModel.findOne({'_id': token.user})
+        user
       };
+      if (user === null) {
+        next({
+          status: 400,
+          error: 'Invalid authentication token. User does not exist.'
+        });
+      }
       next();
     } catch (err) {
       next({

@@ -1,4 +1,5 @@
 const UserModel = require('./model');
+const authorizationMiddleware = require('./authorization/middleware');
 
 async function getUserFromParameter (req, res, next, userId) {
   try {
@@ -20,31 +21,44 @@ async function getUserFromParameter (req, res, next, userId) {
   }
 }
 
-async function registerUser (req, res, next) {
-  // TODO load default role?
-  let user = new UserModel({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    hNumber: req.body.hNumber,
-    password: req.body.password,
-    roles: [],
-    confirmed: false
-  });
-
-  try {
-    await user.save();
-    res.locals.user = user;
-    // TODO send confirmation email
-  } catch (err) {
-    next({
-      statusCode: 500,
-      error: err
-    });
+async function authorizeAddUser (req, res, next) {
+  if (!req.body.register) {
+    authorizationMiddleware.checkUserIsAuthorized('user/*', 'create')(req, res, next);
   }
+}
+
+async function authorizeGetUsers (req, res, next) {
+  authorizationMiddleware.checkUserIsAuthorized('user/*', 'list')(req, res, next);
+}
+
+async function authorizeGetUser (req, res, next) {
+  // TODO allow if self or in their club
+  authorizationMiddleware.checkUserIsAuthorized('user/*', 'view')(req, res, next);
+}
+
+async function authorizeUpdateUser (req, res, next) {
+  // TODO allow if self
+}
+
+async function authorizeDeleteUser (req, res, next) {
+  authorizationMiddleware.checkUserIsAuthorized('user/*', 'delete')(req, res, next);
+}
+
+async function authorizeAddRoleToUser (req, res, next) {
+  // TODO
+}
+
+async function authorizeGetRolesForUser (req, res, next) {
+  // TODO allow if self
 }
 
 module.exports = {
   getUserFromParameter,
-  registerUser
+  authorizeAddUser,
+  authorizeGetUsers,
+  authorizeGetUser,
+  authorizeUpdateUser,
+  authorizeDeleteUser,
+  authorizeAddRoleToUser,
+  authorizeGetRolesForUser
 };

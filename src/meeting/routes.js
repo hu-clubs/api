@@ -2,10 +2,12 @@ const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
 const clubMiddleware = require('../club/middleware');
-const authenticationMiddleware = require('../authentication/middleware');
+const authenticationMiddleware = require('../user/authentication/middleware');
 const router = express.Router();
 
 router.param('meetingId', middleware.getMeetingFromParameter);
+
+router.param('clubId', clubMiddleware.getClubFromParameter);
 
 router.post('/', authenticationMiddleware.authenticate, controller.addMeeting);
 
@@ -16,8 +18,6 @@ router.get('/:meetingId', authenticationMiddleware.authenticate, controller.getM
 router.patch('/:meetingId', authenticationMiddleware.authenticate, controller.updateMeeting);
 
 router.delete('/:meetingId', authenticationMiddleware.authenticate, controller.deleteMeeting);
-
-router.param('clubId', clubMiddleware.getClubFromParameter);
 
 router.get('/club/:clubId', authenticationMiddleware.authenticate, controller.getMeetingsForClub);
 

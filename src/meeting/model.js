@@ -39,7 +39,12 @@ let meetingSchema = mongoose.Schema({
     required: true,
     index: true
   },
-  attendees: [{
+  invitedUsers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: []
+  }],
+  checkedInUsers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     default: []

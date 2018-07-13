@@ -1,8 +1,8 @@
 const loglevel = require('loglevel');
 const mongoose = require('mongoose');
+const config = require('./config');
 
-// TODO load url from config
-mongoose.connect('mongodb://localhost:32768/huclubs');
+mongoose.connect(config.mongoDbUrl);
 
 let connection = mongoose.connection;
 connection.on('error', function () {

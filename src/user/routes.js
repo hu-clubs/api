@@ -1,29 +1,69 @@
 const express = require('express');
 const controller = require('./controller');
 const middleware = require('./middleware');
-const authenticationMiddleware = require('../authentication/middleware');
-const authenticationController = require('../authentication/controller');
+const authenticationMiddleware = require('./authentication/middleware');
+const authorizationRoleMiddleware = require('./authorization/role/middleware');
+const authorizationMiddleware = require('./authorization/middleware');
+const authenticationRouter = require('./authentication/routes');
+const authorizationRouter = require('./authorization/routes');
 const router = express.Router();
 
 // Middleware
 router.param('userId', middleware.getUserFromParameter);
-
-// Register user
-router.post('/register', middleware.registerUser, authenticationController.sendJwt);
+router.param('roleId', authorizationRoleMiddleware.getRoleFromParameter);
 
 // Add user
-router.post('/', controller.addUser);
+router.post('/',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeAddUser,
+  authorizationMiddleware.checkUserIsAuthorizedFromLocals,
+  controller.addUser,
+  authenticationRouter.sendJwt
+);
 
 // List users
-router.get('/', authenticationMiddleware.authenticate, controller.getUsers);
+router.get('/',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeGetUsers,
+  controller.getUsers
+);
 
 // Get user details
-router.get('/:userId', authenticationMiddleware.authenticate, controller.getUser);
+router.get('/:userId',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeGetUser,
+  controller.getUser
+);
 
 // Update user
-router.patch('/:userId', authenticationMiddleware.authenticate, controller.updateUser);
+router.patch('/:userId',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeUpdateUser,
+  controller.updateUser
+);
 
 // Delete user
-router.delete('/:userId', authenticationMiddleware.authenticate, controller.deleteUser);
+router.delete('/:userId',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeDeleteUser,
+  controller.deleteUser
+);
+
+// Add a role to a user
+router.post('/:userId/roles/add/:roleId',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeAddRoleToUser,
+  controller.addRoleToUser
+);
+
+// Get the roles of a user
+router.get('/:userId/roles/',
+  authenticationMiddleware.authenticate,
+  middleware.authorizeGetRolesForUser,
+  controller.getRolesForUser
+);
+
+router.use('/authentication', authenticationRouter);
+router.use('/authorization', authorizationRouter);
 
 module.exports = router;
