@@ -1,4 +1,5 @@
 const UserModel = require('./model');
+const authenticationMiddleware = require('./authentication/middleware');
 const authorizationMiddleware = require('./authorization/middleware');
 
 async function getUserFromParameter (req, res, next, userId) {
@@ -23,29 +24,43 @@ async function getUserFromParameter (req, res, next, userId) {
 
 async function authorizeAddUser (req, res, next) {
   if (!req.body.register) {
-    authorizationMiddleware.checkUserIsAuthorized('user/*', 'create')(req, res, next);
+    await authenticationMiddleware.authenticate(req, res, next);
+    authorizationMiddleware.checkUserIsAuthorized('app/users/*', 'add')(req, res, next);
+  } else {
+    next();
   }
 }
 
 async function authorizeGetUsers (req, res, next) {
-  authorizationMiddleware.checkUserIsAuthorized('user/*', 'list')(req, res, next);
+  authorizationMiddleware.checkUserIsAuthorized('app/users/*', 'get')(req, res, next);
 }
 
 async function authorizeGetUser (req, res, next) {
-  // TODO allow if self or in their club
-  authorizationMiddleware.checkUserIsAuthorized('user/*', 'view')(req, res, next);
+  let authenticatedUser = res.locals.auth.user;
+  let userToGet = res.locals.user;
+  if (authenticatedUser._id === userToGet._id) {
+    authorizationMiddleware.checkUserIsAuthorized('app/users/self', 'get')(req, res, next);
+  } else {
+    authorizationMiddleware.checkUserIsAuthorized('app/users/' + userToGet._id, 'get')(req, res, next);
+  }
 }
 
 async function authorizeUpdateUser (req, res, next) {
-  // TODO allow if self
+  let authenticatedUser = res.locals.auth.user;
+  let userToGet = res.locals.user;
+  if (authenticatedUser._id === userToGet._id) {
+    authorizationMiddleware.checkUserIsAuthorized('app/users/self', 'update')(req, res, next);
+  } else {
+    authorizationMiddleware.checkUserIsAuthorized('app/users/' + userToGet._id, 'update')(req, res, next);
+  }
 }
 
 async function authorizeDeleteUser (req, res, next) {
-  authorizationMiddleware.checkUserIsAuthorized('user/*', 'delete')(req, res, next);
+  authorizationMiddleware.checkUserIsAuthorized('app/users/*', 'delete')(req, res, next);
 }
 
 async function authorizeAddRoleToUser (req, res, next) {
-  // TODO
+  // TODO check namespace of role
 }
 
 async function authorizeGetRolesForUser (req, res, next) {

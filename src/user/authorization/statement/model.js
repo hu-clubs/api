@@ -3,8 +3,12 @@ const mongoose = require('mongoose');
 let statementSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
+  },
+  namespace: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Namespace',
+    required: true
   },
   resource: {
     type: String,
@@ -19,6 +23,13 @@ let statementSchema = mongoose.Schema({
     type: String,
     required: true
   }
+});
+
+statementSchema.index({
+  'name': 1,
+  'namespace': 1
+}, {
+  unique: true
 });
 
 let statementModel = mongoose.model('Statement', statementSchema);

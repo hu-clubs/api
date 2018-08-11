@@ -3,7 +3,6 @@ const controller = require('./controller');
 const middleware = require('./middleware');
 const authenticationMiddleware = require('./authentication/middleware');
 const authorizationRoleMiddleware = require('./authorization/role/middleware');
-const authorizationMiddleware = require('./authorization/middleware');
 const authenticationRouter = require('./authentication/routes');
 const authorizationRouter = require('./authorization/routes');
 const router = express.Router();
@@ -14,11 +13,8 @@ router.param('roleId', authorizationRoleMiddleware.getRoleFromParameter);
 
 // Add user
 router.post('/',
-  authenticationMiddleware.authenticate,
   middleware.authorizeAddUser,
-  authorizationMiddleware.checkUserIsAuthorizedFromLocals,
-  controller.addUser,
-  authenticationRouter.sendJwt
+  controller.addUser
 );
 
 // List users

@@ -3,6 +3,7 @@ const StatementModel = require('./model');
 async function addStatement (req, res, next) {
   let statement = new StatementModel({
     name: req.body.name,
+    namespace: req.body.namespace,
     resource: req.body.resource,
     effect: req.body.effect,
     action: req.body.action
@@ -38,6 +39,7 @@ async function getStatement (req, res, next) {
 async function updateStatement (req, res, next) {
   let statement = res.locals.role;
   statement.name = req.body.name || statement.name;
+  statement.namespace = req.body.namespace || statement.namespace;
   statement.resource = req.body.resource || statement.resource;
   statement.effect = req.body.effect || statement.effect;
   statement.action = req.body.action || statement.action;

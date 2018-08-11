@@ -1,4 +1,5 @@
 const ClubModel = require('./model');
+const NamespaceModel = require('../user/authorization/statement/model');
 
 async function addClub (req, res, next) {
   let club = new ClubModel({
@@ -9,18 +10,34 @@ async function addClub (req, res, next) {
 
   try {
     club = await club.save();
-    res.json(club);
   } catch (err) {
     next({
       status: 500,
       error: err
     });
   }
+
+  let clubNamespace = new NamespaceModel({
+    site: 'CLUB',
+    resource: club._id
+  });
+
+  try {
+    await clubNamespace.save();
+  } catch (err) {
+    next({
+      status: 500,
+      error: err
+    });
+  }
+
+  res.json(club);
 }
 
 async function getClubs (req, res, next) {
   try {
     let clubs = await ClubModel.find();
+    console.log(clubs);
     res.json(clubs);
   } catch (err) {
     next({
@@ -31,7 +48,9 @@ async function getClubs (req, res, next) {
 }
 
 async function getClub (req, res, next) {
-  res.json(res.locals.club);
+  let club = res.locals.club;
+  await club.populate('members');
+  res.json(club);
 }
 
 async function updateClub (req, res, next) {
