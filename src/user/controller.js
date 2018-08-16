@@ -8,7 +8,6 @@ async function addUser (req, res, next) {
     // TODO add some way to verify that a user is allowed to register (i.e. a code or email invite)
     // TODO load default role?
     // TODO send confirmation email
-    console.log('Registering1');
     user = new UserModel({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -18,7 +17,6 @@ async function addUser (req, res, next) {
       roles: [],
       confirmed: false
     });
-    console.log('Registering 2');
   } else {
     user = new UserModel({
       firstName: req.body.firstName,
@@ -32,11 +30,8 @@ async function addUser (req, res, next) {
   }
 
   try {
-    console.log('Registering 3');
     user = await user.save();
-    console.log('Registering 4');
     if (isRegistering) {
-      console.log('Registering 5');
       res.locals.user = user;
       authenticationController.sendJwt(req, res, next);
     } else {

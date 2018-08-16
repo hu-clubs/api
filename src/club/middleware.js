@@ -2,7 +2,7 @@ const ClubModel = require('./model');
 
 async function getClubFromParameter (req, res, next, clubId) {
   try {
-    let club = await ClubModel.findOne({'_id': clubId});
+    let club = await ClubModel.findOne({'_id': clubId}).populate('members');
     if (club) {
       res.locals.club = club;
       next();
