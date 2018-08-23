@@ -9,7 +9,7 @@ async function authenticate (req, res, next) {
       issuer: config.jwtIssuer
     });
     try {
-      let user = await UserModel.findOne({'_id': token.user});
+      let user = await UserModel.findOne({'_id': token._id});
       res.locals.auth = {
         user
       };

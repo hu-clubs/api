@@ -38,8 +38,15 @@ async function login (req, res, next) {
 
 async function sendJwt (req, res, next) {
   let user = res.locals.user;
-  let token = jwt.sign({'user': user._id}, config.jwtSecret, {
-    issuer: config.jwtIssuer
+  let {_id, firstName, lastName, email, hNumber} = user;
+  let token = jwt.sign({
+    _id,
+    firstName,
+    lastName,
+    email,
+    hNumber
+  }, config.jwtSecret, {
+    issuer: config.jwtIssuer,
   });
   res.json({'token': token});
 }
