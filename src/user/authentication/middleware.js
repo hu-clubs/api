@@ -4,6 +4,7 @@ const config = require('../../config');
 
 async function authenticate (req, res, next) {
   let token = req.header('Authorization');
+  token = token.replace('Bearer ', '');
   try {
     token = await jwt.verify(token, config.jwtSecret, {
       issuer: config.jwtIssuer
