@@ -6,4 +6,3 @@ VOLUME /usr/src/app
 EXPOSE $port
 
 CMD ["npm", "run", "dev"]
-ENTRYPOINT ["npm", "run", "dev"]
